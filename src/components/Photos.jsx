@@ -120,4 +120,4 @@ const displayData = () => {
 
 }
 
-export default Photoss
+export default Photos
