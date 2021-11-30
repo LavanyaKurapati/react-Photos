@@ -1,16 +1,20 @@
-import {Card, CardBody, CardTitle,CardImg,Col} from 'reactstrap'
+import { Card, CardBody, CardTitle, CardImg, Col } from "reactstrap";
 
-const Photo = ({details}) => {
-    const {title,url} = details
-    return(
-    <Col xs='6' md='4' xl='2'>
-    <Card>
-        <CardImg alt={title} src={url} width='100%' />
+const Photo = ({ title, url, onPhotoClick }) => {
+  return (
+    <Col xs="12" md="4" xl="2" className="mb-2">
+      <Card>
+        <CardImg
+          alt={title}
+          src={url}
+          width="100%"
+          onClick={() => onPhotoClick({ title, url })}
+        />
         <CardBody>
-            <CardTitle>{title}</CardTitle>
+          <CardTitle>{title}</CardTitle>
         </CardBody>
-    </Card>
+      </Card>
     </Col>
-    )
-}
-export default Photo
+  );
+};
+export default Photo;

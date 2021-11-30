@@ -1,123 +1,162 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {Pagination, PaginationItem, PaginationLink, Spinner, Container, Row} from 'reactstrap'
-import { useState, useEffect } from 'react';
-import Photo from './Photo';
+import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Spinner,
+  Container,
+  Row,
+} from "reactstrap";
+import { useState, useEffect } from "react";
+import Photo from "./Photo";
+import ImagePreview from "./ImagePreview";
 
 const Photos = () => {
-    
-  const [page, setPage] = useState(1)
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isImageOpen, setIsImageOpen] = useState(false);
+  const [isImagePreview, setIsImagePreview] = useState(null);
 
-  useEffect(()=>{
-    let url=`https://jsonplaceholder.typicode.com/albums/${page}/photos`
-    const fetchPhotos = async() => {
-      setLoading(true)
-      let response = await fetch(url)
-      let fetchedData = await response.json()
-      setLoading(false)
-      setData(fetchedData)
-      console.log(page)
-    }
-    fetchPhotos()
-  },[page])
-
-
-  const handleFirstClick = () => {
-    setPage(1)
-  }
+  useEffect(() => {
+    let url = `https://jsonplaceholder.typicode.com/albums/${page}/photos`;
+    const fetchPhotos = async () => {
+      setLoading(true);
+      let response = await fetch(url);
+      let fetchedData = await response.json();
+      setLoading(false);
+      setData(fetchedData);
+      console.log(page);
+    };
+    fetchPhotos();
+  }, [page]);
 
   const handlePrevClick = () => {
-    page === 1 ? setPage(1) : setPage(page-1)
-  }
+    page === 1 ? setPage(1) : setPage(page - 1);
+  };
 
-  const handle1Click = () => {
-    setPage(1)
-  }
+  const showImagePreview = (photoObject) => {
+    setIsImagePreview(photoObject);
+    setIsImageOpen(true);
+    console.log(photoObject);
+  };
 
-  const handle2Click = () => {
-    setPage(2)
-  }
-
-  const handle3Click = () => {
-    setPage(3)
-  }
-
-  const handle4Click = () => {
-    setPage(4)
-  }
-
-  const handle5Click = () => {
-    setPage(5)
-  }
-
-  const handleNextClick = () => {
-    setPage(page+1)
-  }
-
-  const handleLastClick = () => {
-    setPage(10)
-  }
-
-  const LoaderView = () => {
-    return(
-    <Spinner type="border">
-        Loading...
-    </Spinner>
-    )
-}
-
-const displayData = () => {
-    return(
-        <Container>
-            <Row >  
-                {data.map(item => <Photo key={item.id} details={item}/>)}  
-            </Row>
-        </Container>
-        
-    )
-}
+  const hideImagePreview = () => {
+    setIsImageOpen(false);
+    setIsImagePreview(null);
+  };
 
   return (
-    <div className="App">
-        <div >
-            {loading ? LoaderView() : displayData()}
-        </div>
-        
-    <div className="pagi-container">
-      <Pagination className="text-center">
-        <PaginationItem>
-          <PaginationLink first href="#" onClick={handleFirstClick}/>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" previous onClick={handlePrevClick}/>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" onClick={handle1Click}>1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" onClick={handle2Click}>2</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" onClick={handle3Click}>3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" onClick={handle4Click}>4</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" onClick={handle5Click}>5</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" next onClick={handleNextClick}/>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" last onClick={handleLastClick}/>
-        </PaginationItem>
-      </Pagination>
+    <Container>
+      {isImageOpen && (
+        <ImagePreview
+          title={isImagePreview.title}
+          url={isImagePreview.url}
+          closePreview={hideImagePreview}
+        />
+      )}
+
+      {loading ? (
+        <Spinner type="border">Loading...</Spinner>
+      ) : (
+        <Row>
+          {data.map(({ title, url, id }) => (
+            <Photo
+              key={id}
+              title={title}
+              url={url}
+              onPhotoClick={showImagePreview}
+            />
+          ))}
+        </Row>
+      )}
+
+      <div className="pagi-container">
+        <Pagination>
+          <PaginationItem>
+            <PaginationLink
+              first
+              href="#"
+              onClick={() => {
+                setPage(1);
+              }}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#" previous onClick={handlePrevClick} />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href="#"
+              onClick={() => {
+                setPage(1);
+              }}
+            >
+              1
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href="#"
+              onClick={() => {
+                setPage(2);
+              }}
+            >
+              2
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href="#"
+              onClick={() => {
+                setPage(3);
+              }}
+            >
+              3
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href="#"
+              onClick={() => {
+                setPage(4);
+              }}
+            >
+              4
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href="#"
+              onClick={() => {
+                setPage(5);
+              }}
+            >
+              5
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href="#"
+              next
+              onClick={() => {
+                setPage(page + 1);
+              }}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              href="#"
+              last
+              onClick={() => {
+                setPage(10);
+              }}
+            />
+          </PaginationItem>
+        </Pagination>
       </div>
-    </div>
+    </Container>
   );
+};
 
-}
-
-export default Photos
+export default Photos;

@@ -1,19 +1,19 @@
 .App {
   text-align: center;
-  height:100vh;
-  margin:20px;
-  display:flex;
+  height: 100vh;
+  margin: 20px;
+  display: flex;
   flex-direction: column;
 }
 
-h1{
-  margin-top:30px;
+h1 {
+  margin-bottom: 10px;
 }
-.display-container{
-  margin-top:50px;
+.display-container {
+  margin-top: 50px;
 }
-.pagi-container{
-  bottom:fixed;
-  right: fixed;
-  margin:30px;
+.pagi-container {
+  display: flex;
+  justify-content: center;
+  margin: 30px;
 }
