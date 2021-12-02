@@ -6,6 +6,10 @@ import {
   Spinner,
   Container,
   Row,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
 } from "reactstrap";
 import { useState, useEffect } from "react";
 import Photo from "./Photo";
@@ -17,6 +21,8 @@ const Photos = () => {
   const [loading, setLoading] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [isImagePreview, setIsImagePreview] = useState(null);
+  const [isButtonClick, setIsButtonClick] = useState(false);
+  const [newData, setNewData] = useState({});
 
   useEffect(() => {
     let url = `https://jsonplaceholder.typicode.com/albums/${page}/photos`;
@@ -30,6 +36,33 @@ const Photos = () => {
     };
     fetchPhotos();
   }, [page]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(newData);
+
+    let options = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(newData),
+    };
+    const res = await fetch(
+      "https://jsonplaceholder.typicode.com/albums/1/photos",
+      options
+    );
+    const updatedData = await res.json();
+    console.log(updatedData);
+    setNewData({});
+  };
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setNewData((newData) => ({ ...newData, [name]: value }));
+  };
 
   const handlePrevClick = () => {
     page === 1 ? setPage(1) : setPage(page - 1);
@@ -48,6 +81,50 @@ const Photos = () => {
 
   return (
     <Container>
+      <Button onClick={() => setIsButtonClick(true)} className="mb-2">
+        New Photo
+      </Button>
+      {isButtonClick && (
+        <Modal size="lg" isOpen>
+          <ModalHeader toggle={() => setIsButtonClick(false)}>
+            Modal Form
+          </ModalHeader>
+          <ModalBody>
+            <form onSubmit={handleSubmit}>
+              <label>Title : </label>
+              <input
+                type="text"
+                placeholder="Enter Title"
+                name="title"
+                value={newData.title || ""}
+                onChange={handleChange}
+              />
+              <label>URL : </label>
+              <input
+                type="text"
+                placeholder="Enter Url"
+                name="url"
+                value={newData.url || ""}
+                onChange={handleChange}
+              />
+              <label>Domain URL : </label>
+              <input
+                type="text"
+                placeholder="Enter domainUrl"
+                name="domainUrl"
+                value={newData.domainUrl || ""}
+                onChange={handleChange}
+              />
+              <Button
+                className="button"
+                disabled={!newData.title || !newData.url || !newData.domainUrl}
+              >
+                Save
+              </Button>
+            </form>
+          </ModalBody>
+        </Modal>
+      )}
       {isImageOpen && (
         <ImagePreview
           title={isImagePreview.title}
@@ -113,26 +190,6 @@ const Photos = () => {
               }}
             >
               3
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink
-              href="#"
-              onClick={() => {
-                setPage(4);
-              }}
-            >
-              4
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink
-              href="#"
-              onClick={() => {
-                setPage(5);
-              }}
-            >
-              5
             </PaginationLink>
           </PaginationItem>
           <PaginationItem>

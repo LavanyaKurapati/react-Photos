@@ -15,5 +15,22 @@ h1 {
 .pagi-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin: 30px;
+}
+form {
+  display: flex;
+  flex-direction: column;
+}
+input {
+  margin: 10px 0px;
+  padding: 7px 20px;
+  border-radius: 7px;
+  border: 1px solid grey;
+  width: 60%;
+}
+.button {
+  display: flex;
+  justify-content: center;
+  width: 50px;
 }
