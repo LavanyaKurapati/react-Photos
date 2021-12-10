@@ -1,9 +1,6 @@
 .App {
   text-align: center;
   height: 100vh;
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
 }
 
 h1 {
@@ -33,4 +30,29 @@ input {
   display: flex;
   justify-content: center;
   width: 50px;
+}
+nav {
+  display: flex;
+  background-color: blueviolet;
+  justify-content: center;
+  margin-bottom: 20px;
+  height: 40px;
+  align-items: center;
+}
+ul {
+  list-style-type: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+.link-item {
+  text-decoration: none;
+  color: white;
+  margin: 0px 10px;
+}
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
 }

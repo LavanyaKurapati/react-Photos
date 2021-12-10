@@ -12,11 +12,12 @@ import {
   ModalBody,
 } from "reactstrap";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router";
 import Photo from "./Photo";
 import ImagePreview from "./ImagePreview";
 
 const Photos = () => {
-  const [page, setPage] = useState(1);
+  //const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
@@ -24,49 +25,54 @@ const Photos = () => {
   const [isButtonClick, setIsButtonClick] = useState(false);
   const [newData, setNewData] = useState({});
 
+  let { id } = useParams();
+
   useEffect(() => {
-    let url = `https://jsonplaceholder.typicode.com/albums/${page}/photos`;
+    let url = `https://jsonplaceholder.typicode.com/albums/${id}/photos`;
     const fetchPhotos = async () => {
-      setLoading(true);
-      let response = await fetch(url);
-      let fetchedData = await response.json();
-      setLoading(false);
-      setData(fetchedData);
-      console.log(page);
+      try {
+        setLoading(true);
+        let response = await fetch(url);
+        let fetchedData = await response.json();
+        setLoading(false);
+        setData(fetchedData);
+      } catch (e) {
+        console.log(e);
+      }
     };
     fetchPhotos();
-  }, [page]);
+  }, [id]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(newData);
-
-    let options = {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(newData),
-    };
-    const res = await fetch(
-      "https://jsonplaceholder.typicode.com/albums/1/photos",
-      options
-    );
-    const updatedData = await res.json();
-    console.log(updatedData);
-    setNewData({});
+    try {
+      e.preventDefault();
+      let options = {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(newData),
+      };
+      const res = await fetch(
+        "https://jsonplaceholder.typicode.com/albums/1/photos",
+        options
+      );
+      const updatedData = await res.json();
+      console.log(updatedData);
+      setIsButtonClick(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
+    const { name, value } = e.target;
     setNewData((newData) => ({ ...newData, [name]: value }));
   };
 
-  const handlePrevClick = () => {
-    page === 1 ? setPage(1) : setPage(page - 1);
-  };
+  // const handlePrevClick = () => {
+  //   page === 1 ? setPage(1) : setPage(page - 1);
+  // };
 
   const showImagePreview = (photoObject) => {
     setIsImagePreview(photoObject);
@@ -81,7 +87,7 @@ const Photos = () => {
 
   return (
     <Container>
-      <Button onClick={() => setIsButtonClick(true)} className="mb-2">
+      <Button onClick={() => setIsButtonClick(true)} className="mb-3">
         New Photo
       </Button>
       {isButtonClick && (
@@ -96,7 +102,7 @@ const Photos = () => {
                 type="text"
                 placeholder="Enter Title"
                 name="title"
-                value={newData.title || ""}
+                value={newData.title}
                 onChange={handleChange}
               />
               <label>URL : </label>
@@ -104,7 +110,7 @@ const Photos = () => {
                 type="text"
                 placeholder="Enter Url"
                 name="url"
-                value={newData.url || ""}
+                value={newData.url}
                 onChange={handleChange}
               />
               <label>Domain URL : </label>
@@ -112,7 +118,7 @@ const Photos = () => {
                 type="text"
                 placeholder="Enter domainUrl"
                 name="domainUrl"
-                value={newData.domainUrl || ""}
+                value={newData.domainUrl}
                 onChange={handleChange}
               />
               <Button
@@ -132,23 +138,25 @@ const Photos = () => {
           closePreview={hideImagePreview}
         />
       )}
-
-      {loading ? (
-        <Spinner type="border">Loading...</Spinner>
-      ) : (
-        <Row>
-          {data.map(({ title, url, id }) => (
+      <Row>
+        {loading ? (
+          <div className="spinner">
+            <Spinner type="border">Loading...</Spinner>
+          </div>
+        ) : (
+          data.map(({ title, url, thumbnailUrl, id }) => (
             <Photo
               key={id}
               title={title}
               url={url}
+              thumbnailUrl={thumbnailUrl}
               onPhotoClick={showImagePreview}
             />
-          ))}
-        </Row>
-      )}
+          ))
+        )}
+      </Row>
 
-      <div className="pagi-container">
+      {/* <div className="pagi-container">
         <Pagination>
           <PaginationItem>
             <PaginationLink
@@ -211,7 +219,7 @@ const Photos = () => {
             />
           </PaginationItem>
         </Pagination>
-      </div>
+      </div> */}
     </Container>
   );
 };
